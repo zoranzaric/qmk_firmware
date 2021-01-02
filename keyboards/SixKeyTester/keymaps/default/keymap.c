@@ -14,6 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include QMK_KEYBOARD_H
+#include "raw_hid.h"
 
 // Defines names for use in layer keycodes and the keymap
 enum layer_names { _BASE };
@@ -39,4 +40,17 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             break;
     }
     return true;
+}
+
+void raw_hid_receive(uint8_t *data, uint8_t length) {
+    setPinOutput(B6);
+    uint8_t *command_id = &(data[0]);
+    switch (*command_id) {
+        case 0:
+          writePinLow(B6);
+          break;
+        case 1:
+          writePinHigh(B6);
+          break;
+    }
 }
